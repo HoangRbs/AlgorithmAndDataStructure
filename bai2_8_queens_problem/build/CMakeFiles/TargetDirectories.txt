@@ -1,0 +1,4 @@
+D:/MY_SCHOOL_WORK_PLACE/back khoa/project01/bai2_8_queens_problem/build/CMakeFiles/bai2.dir
+D:/MY_SCHOOL_WORK_PLACE/back khoa/project01/bai2_8_queens_problem/build/CMakeFiles/ALL_BUILD.dir
+D:/MY_SCHOOL_WORK_PLACE/back khoa/project01/bai2_8_queens_problem/build/CMakeFiles/ZERO_CHECK.dir
+D:/MY_SCHOOL_WORK_PLACE/back khoa/project01/bai2_8_queens_problem/build/includes/CMakeFiles/Timer.dir

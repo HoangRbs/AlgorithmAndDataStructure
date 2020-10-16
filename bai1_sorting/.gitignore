@@ -1,0 +1,5 @@
+./build
+*.swp
+./src/*.swp
+./includes/*.swp
+
