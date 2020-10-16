@@ -40,9 +40,24 @@ class N_queens {
 // Travelling Salesman Salesman Problem
 class TSP {
 	public:
-		TSP() {}
+		TSP() {
+			srand(time(NULL));
+			
+			for (int i = 0; i < this->N; i++) {
+				for (int j = 0; j < this->N; j++) {
+					this->dist.push_back(vector<int>());
+					this->dist[i].push_back(rand()%50 + 1);
+					cout << this->dist[i][j] <<" ";
+				}
+				cout << endl;
+			}
+		};
+
+		const int N = 4; // number of nodes
+		vector<vector<int>> dist;  // distances between nodes
 
 		void execute();
+		void do_tsp(int mask, int pos);
 };
 
 // test fibonacci using dynamic programming
@@ -73,8 +88,8 @@ int main() {
 	}
 
 	// N_queens m_program = N_queens(board);
-	// TSP m_program = TSP();
-	Fibonacci m_program = Fibonacci();
+	TSP m_program;
+	// Fibonacci m_program = Fibonacci();
 
 	m_program.execute();
 };
@@ -210,11 +225,16 @@ int Fibonacci::cal_fibonacci(int idx, int memo[]) {
 
 	return result;
 }
+
 // --------------- TSP: travelling salesman problems ----------------
 
 void TSP::execute() {
-	// testing bitwise operator
-	
-	int _8bit_char = 5;
-	cout << (_8bit_char<<2) << endl; // left shift
+	// int _8bit_char = 5;
+	// cout << (_8bit_char<<2) << endl; // left shift
+
+	// do_tsp(1,0); // at postition A (or 0) -> mask = 1 -> bit = 0001i
+}
+
+void TSP::do_tsp (int mask, int pos) {
+		
 }
