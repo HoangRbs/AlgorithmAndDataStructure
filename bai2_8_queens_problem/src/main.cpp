@@ -229,7 +229,7 @@ int Fibonacci::cal_fibonacci(int idx, int memo[]) {
 // --------------- TSP: travelling salesman problems ----------------
 
 void TSP::execute() {
-	// SKIP BECAUSE I'M TOO LAZY TO WRITE EASY CODE 
+	// SKIP BECAUSE I'M TOO LAZY TO WRITE EASY SHIT
 }
 
 void TSP::do_tsp (int mask, int pos) {
