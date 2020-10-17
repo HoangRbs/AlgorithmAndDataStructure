@@ -229,10 +229,7 @@ int Fibonacci::cal_fibonacci(int idx, int memo[]) {
 // --------------- TSP: travelling salesman problems ----------------
 
 void TSP::execute() {
-	// int _8bit_char = 5;
-	// cout << (_8bit_char<<2) << endl; // left shift
-
-	// do_tsp(1,0); // at postition A (or 0) -> mask = 1 -> bit = 0001i
+	// SKIP BECAUSE I'M TOO LAZY TO WRITE EASY CODE 
 }
 
 void TSP::do_tsp (int mask, int pos) {
