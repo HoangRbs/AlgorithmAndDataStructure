@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits.h>
 #include <time.h>
 #include <stdlib.h>
 #include <vector>
@@ -43,6 +44,7 @@ class TSP {
 		TSP() {
 			srand(time(NULL));
 			
+			// randomize distance between nodes
 			for (int i = 0; i < this->N; i++) {
 				for (int j = 0; j < this->N; j++) {
 					this->dist.push_back(vector<int>());
@@ -55,9 +57,11 @@ class TSP {
 
 		const int N = 4; // number of nodes
 		vector<vector<int>> dist;  // distances between nodes
+		int visitedAll();
+		bool isVisited(int mask, int point_pos);
 
 		void execute();
-		void do_tsp(int mask, int pos);
+		int do_tsp(int mask, int pos);
 };
 
 // test fibonacci using dynamic programming
@@ -226,15 +230,41 @@ int Fibonacci::cal_fibonacci(int idx, int memo[]) {
 	return result;
 }
 
-// --------------- TSP: travelling salesman problems ----------------
+// --------------- TSP ----------------
 
 void TSP::execute() {
-	// int _8bit_char = 5;
-	// cout << (_8bit_char<<2) << endl; // left shift
-
-	// do_tsp(1,0); // at postition A (or 0) -> mask = 1 -> bit = 0001i
+	Timer m_timer;
+	do_tsp(1,0); // at postition A (or 0) -> mask = 1 ~ bit = 0001
 }
 
-void TSP::do_tsp (int mask, int pos) {
+int min(int a, int b) {
+	if (a < b) return a;
+	return b;
+}
+
+bool TSP::isVisited(int mask, int point_pos) {
+	return (mask & (1 << point_pos)) != 0;  // 0011 & (1 << 0 = 0001) = 0001 (A is visited!)
+}
+
+int TSP::visitedAll() {
+	return (1 << this->N) - 1; // -1 ~ BIT = 11111... all node is visited
+}
+
+int TSP::do_tsp (int mask, int pos) {
+	if (mask == this->visitedAll()) {
+		return this->dist[pos][0]; // from D/B/C -> start postition (A)
+	}
+
+	int distance = INT_MAX;
+
+	for (int i_point = 0; i_point < this->N; i_point ++) {
 		
+		if (!this->isVisited(mask, i_point)) {		
+			int new_distance = this->dist[pos][i_point] + do_tsp(mask | (1 << i_point), i_point);
+			distance = min(distance, new_distance); 
+		}
+	
+	}	
+
+	return distance;
 }
