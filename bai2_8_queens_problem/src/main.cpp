@@ -298,8 +298,7 @@ int TSP::do_tsp (int mask, int pos, Node* tmpNode_out) {
 	for (int i_point = 0; i_point < this->N; i_point ++) {
 		if (!this->isVisited(mask, i_point)) {	
 			Node* tmpNode = new Node();
-			int new_distance = this->dist[pos][i_point] + 
-												 do_tsp(mask | (1 << i_point), i_point, tmpNode); 
+			int new_distance = this->dist[pos][i_point] + do_tsp(mask | (1 << i_point), i_point, tmpNode); 
 
 			if(new_distance < distance) {
 				distance = new_distance;
