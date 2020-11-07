@@ -46,22 +46,37 @@ class TSP {
 			
 			// randomize distance between nodes
 			for (int i = 0; i < this->N; i++) {
+				this->dist.push_back(vector<int>());
+				
 				for (int j = 0; j < this->N; j++) {
-					this->dist.push_back(vector<int>());
 					this->dist[i].push_back(rand()%50 + 1);
-					cout << this->dist[i][j] <<" ";
 				}
-				cout << endl;
 			}
 		};
+	
+		struct Node {
+			int currentPoint = 0;
+			int bestNextPoint = 0;
+			int bestDistance = INT_MAX;
+			Node* nextNode = NULL;
+		
+			void setInfo (int currentPoint, int bestNextPoint, int bestDistance, Node* nextNode) {
+				this->currentPoint = currentPoint;
+				this->bestDistance = bestDistance;
+				this->bestNextPoint = bestNextPoint;
+				this->nextNode = nextNode;
+			};
+		};
 
-		const int N = 4; // number of nodes
+		static const int N = 11; // number of nodes
 		vector<vector<int>> dist;  // distances between nodes
+		Node* startNode = NULL; // to save shortest path from A (start Node) -> ... A 
+
 		int visitedAll();
 		bool isVisited(int mask, int point_pos);
-
 		void execute();
-		int do_tsp(int mask, int pos);
+		int do_tsp(int mask, int pos, Node* tmpNode_out);
+		void printNodes(Node* startNode); // print shortest path
 };
 
 // test fibonacci using dynamic programming
@@ -80,6 +95,16 @@ void print2DArray (int board[N_queen_board_size][N_queen_board_size]) {
 	}
 
 	cout << endl << endl;
+}
+
+void print2DVector (vector<vector<int>> board) {
+
+	for (int i = 0; i < board.size(); i++) {
+		for (int j = 0; j < board[i].size(); j++) {
+			cout << board[i][j] <<" ";
+		}
+		cout << endl;
+	}
 }
 
 int main() {
@@ -233,13 +258,24 @@ int Fibonacci::cal_fibonacci(int idx, int memo[]) {
 // --------------- TSP ----------------
 
 void TSP::execute() {
-	Timer m_timer;
-	do_tsp(1,0); // at postition A (or 0) -> mask = 1 ~ bit = 0001
+	print2DVector(this->dist);   // print distances
+	Node* tmpNode = new Node();
+	do_tsp(1, 0, tmpNode); // at postition A (or 0) and MASK = 1 ~ bit = 0001
+ 
+	this->startNode = tmpNode;	
+	this->printNodes(startNode);	
 }
 
-int min(int a, int b) {
-	if (a < b) return a;
-	return b;
+void TSP::printNodes(Node* startNode) {
+	Node* m_node = startNode;
+	cout << m_node->currentPoint;
+	while (m_node != NULL) {
+		cout << " -> " << m_node->bestNextPoint;
+		m_node = m_node->nextNode;
+	}
+
+	cout << endl;
+	cout << "total distances: "<< startNode->bestDistance << endl;
 }
 
 bool TSP::isVisited(int mask, int point_pos) {
@@ -250,20 +286,28 @@ int TSP::visitedAll() {
 	return (1 << this->N) - 1; // -1 ~ BIT = 11111... all node is visited
 }
 
-int TSP::do_tsp (int mask, int pos) {
+int TSP::do_tsp (int mask, int pos, Node* tmpNode_out) {
 	if (mask == this->visitedAll()) {
-		return this->dist[pos][0]; // from D/B/C -> start postition (A)
+		tmpNode_out->setInfo(pos, 0, dist[pos][0], NULL); 
+
+		return this->dist[pos][0]; // distance from D/B/C -> start postition (A)
 	}
 
 	int distance = INT_MAX;
 
 	for (int i_point = 0; i_point < this->N; i_point ++) {
-		
-		if (!this->isVisited(mask, i_point)) {		
-			int new_distance = this->dist[pos][i_point] + do_tsp(mask | (1 << i_point), i_point);
-			distance = min(distance, new_distance); 
+		if (!this->isVisited(mask, i_point)) {	
+			Node* tmpNode = new Node();
+			int new_distance = this->dist[pos][i_point] + 
+												 do_tsp(mask | (1 << i_point), i_point, tmpNode); 
+
+			if(new_distance < distance) {
+				distance = new_distance;
+
+				tmpNode_out->setInfo(pos, i_point, distance, tmpNode);
+			}
 		}
-	
+
 	}	
 
 	return distance;
