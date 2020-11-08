@@ -154,7 +154,7 @@ void loadParagraph (WordHashTable& m_wordsTable) {
 	mFile.close();
 }
 
-void loadAndFindKeywords (WordHashTable m_wordsTable) {
+void loadAndFindKeywords (WordHashTable& m_wordsTable) {
 	ifstream mFile("keywords.txt");
 	string line;
 	
