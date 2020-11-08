@@ -81,7 +81,7 @@ class WordNodeList {
 			}
 
 			if (pWord == NULL) {
-				cout << "Error cannot find word !" << endl;
+				cout << endl << "\"" << word << "\"" << ": cannot find word !" << endl;
 				return;
 			}
 
