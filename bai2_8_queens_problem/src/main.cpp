@@ -4,11 +4,14 @@
 #include <stdlib.h>
 #include <vector>
 #include "../includes/Timer.cpp"
+#include <fstream>
+#include <sstream>
+#include <string>
 
 using namespace std;
 
 // 8x8 board
-const int N_queen_board_size = 5;
+const int N_queen_board_size = 8;
 
 class N_queens {
 	public:
@@ -43,7 +46,31 @@ class TSP {
 	public:
 		TSP() {
 			srand(time(NULL));
-			
+				
+			ifstream mFile ("inputdatas.txt");
+			string line;
+			int row = 0;
+		
+			while (getline(mFile, line)) {
+				// read each word in a line
+				string number_str;
+				stringstream iss(line);
+		
+				this->dist.push_back(vector<int> ());
+				while (iss >> number_str) {
+					int number = stoi(number_str);
+					// cout << number << " ";
+					
+					this->dist[row].push_back(number);
+				}
+
+				// cout << endl;
+		
+				row++;
+			}
+		
+			mFile.close();
+			/*
 			// randomize distance between nodes
 			for (int i = 0; i < this->N; i++) {
 				this->dist.push_back(vector<int>());
@@ -52,6 +79,7 @@ class TSP {
 					this->dist[i].push_back(rand()%50 + 1);
 				}
 			}
+			*/
 		};
 	
 		struct Node {
@@ -68,7 +96,7 @@ class TSP {
 			};
 		};
 
-		static const int N = 11; // number of nodes
+		int N = 6; // number of nodes
 		vector<vector<int>> dist;  // distances between nodes
 		Node* startNode = NULL; // to save shortest path from A (start Node) -> ... A 
 
@@ -117,23 +145,25 @@ int main() {
 	}
 
 	// N_queens m_program = N_queens(board);
-	TSP m_program;
+	 TSP m_program;
 	// Fibonacci m_program = Fibonacci();
 
 	m_program.execute();
 };
 
 // ----------------------------- N queens problem -------------------------------
+int numMethods = 0;
 
 void N_queens::execute() {
 	solveNQueen(0);
+	cout << "\n N queens number of solutions: " << numMethods << endl;
 }
 
 void N_queens::solveNQueen (int currentRow) {
 	if (currentRow >= N_queen_board_size) {
 		// exceed the default board row -> all queens are valid
 		// print final result
-
+		numMethods++;
 		print2DArray(this->board);	
 	}
 
@@ -263,14 +293,15 @@ void TSP::execute() {
 	do_tsp(1, 0, tmpNode); // at postition A (or 0) and MASK = 1 ~ bit = 0001
  
 	this->startNode = tmpNode;	
-	this->printNodes(startNode);	
+	this->printNodes(startNode); // print result	
 }
 
 void TSP::printNodes(Node* startNode) {
 	Node* m_node = startNode;
 	cout << m_node->currentPoint;
 	while (m_node != NULL) {
-		cout << " -> " << m_node->bestNextPoint;
+		if (m_node->bestNextPoint != -1)
+			cout << " -> " << m_node->bestNextPoint;
 		m_node = m_node->nextNode;
 	}
 
@@ -288,19 +319,23 @@ int TSP::visitedAll() {
 
 int TSP::do_tsp (int mask, int pos, Node* tmpNode_out) {
 	if (mask == this->visitedAll()) {
-		tmpNode_out->setInfo(pos, 0, dist[pos][0], NULL); 
+		// tmpNode_out->setInfo(pos, 0, dist[pos][0], NULL); 
 
-		return this->dist[pos][0]; // distance from D/B/C -> start postition (A)
+		tmpNode_out->setInfo(pos, -1, 0, NULL); 
+		// return this->dist[pos][0]; // distance from D/B/C -> start postition (A)
+		return 0;
 	}
+	
 
-	int distance = INT_MAX;
+	// int distance = INT_MAX;
+	int distance = 0; // tim duong lon nhat
 
 	for (int i_point = 0; i_point < this->N; i_point ++) {
 		if (!this->isVisited(mask, i_point)) {	
 			Node* tmpNode = new Node();
 			int new_distance = this->dist[pos][i_point] + do_tsp(mask | (1 << i_point), i_point, tmpNode); 
 
-			if(new_distance < distance) {
+			if(new_distance > distance) {
 				distance = new_distance;
 
 				tmpNode_out->setInfo(pos, i_point, distance, tmpNode);
